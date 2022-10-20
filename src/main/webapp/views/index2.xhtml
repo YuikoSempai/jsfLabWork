@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xml:lang="en" lang="en">
+<head>
+    <title>Title</title>
+</head>
+<body>
+<h:form>
+    X:
+    <h:inputText value="#{mainBean.newData.x}"/>
+    Y:
+    <h:inputText value="#{mainBean.newData.y}"/>
+    R:
+    <h:inputText value="#{mainBean.newData.r}"/>
+    <h:commandButton action="#{mainBean.createData()}" value="Create Data"/>
+</h:form>
+<div id="dataFromBean">
+    <h:outputScript library="js">
+        let asd = #{mainBean.dataList.size()};
+        let i = 0;
+        myArray = #{mainBean.getAllElements()}.split("\n")
+    </h:outputScript>
+</div>
+</body>
+</html>

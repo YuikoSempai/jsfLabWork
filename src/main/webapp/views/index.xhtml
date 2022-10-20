@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Page with form</title>
+</h:head>
+<body>
+<table id="siteTalbe">
+    <tr>
+        <th id="formTableHeader">Form</th>
+        <th id="tableTableHeader">Table</th>
+    </tr>
+    <tr>
+        <td>
+            <h:form id="form">
+                <div>
+                    <h:panelGrid columns="1" style="margin-bottom: 10px">
+                        <p:outputLabel for="x" value="Координата X:"/>
+                        <p:inputText id="x" value="#{mainBean.newData.x}">
+                            <f:validator validatorId="xValidator"/>
+                        </p:inputText>
+                        <p:slider for="x" minValue="-4" maxValue="4" step="1" style="width: 14rem"/>
+                    </h:panelGrid>
+                </div>
+                <div>
+                    <h:panelGrid columns="1" style="margin-bottom: 10px">
+                        <p:outputLabel for="y" value="Координата Y:"/>
+                        <p:inputText id="y" value="#{mainBean.newData.y}" oninput="onlyDigits()" required="true">
+                            <f:validator validatorId="yValidator"/>
+                        </p:inputText>
+                    </h:panelGrid>
+                </div>
+                <div>
+                    <h:panelGrid columns="1" style="margin-bottom: 10px">
+                        <p:outputLabel for="r" value="Радиус"/>
+                        <p:selectOneMenu id="r" value="#{mainBean.newData.r}" onchange="setInput()">
+                            <f:selectItem itemValue="1" itemLabel="1"/>
+                            <f:selectItem itemValue="2" itemLabel="2"/>
+                            <f:selectItem itemValue="3" itemLabel="3"/>
+                            <f:selectItem itemValue="4" itemLabel="4"/>
+                            <f:selectItem itemValue="5" itemLabel="5"/>
+                            <f:validator validatorId="rValidator"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                </div>
+                <h:commandButton id="sendButton" value="Добавить" action="#{mainBean.createData()}">
+                    <f:ajax execute="form" render="dataTable"/>
+                    <f:ajax render="dataGetter"/>
+                </h:commandButton>
+                <h:commandButton id="clearButton" value="Очистить" action="#{mainBean.clear()}">
+                    <f:ajax execute="form" render="dataTable"/>
+                </h:commandButton>
+            </h:form>
+        </td>
+        <td>
+            <h:panelGroup>
+                <p:dataTable id="dataTable" value="#{mainBean.dataList}" var="data">
+                    <p:column>
+                        <f:facet name="header">Координата X</f:facet>
+                        #{data.x}
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">Координата Y</f:facet>
+                        #{data.y}
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">Радиус</f:facet>
+                        #{data.r}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Статус попадания</f:facet>
+                        #{data.status}
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="text: center">
+            <canvas width="400" height="400" id="graphic"></canvas>
+            </div>
+        </td>
+    </tr>
+</table>
+<a href="main.xhtml">
+    Ссылка
+</a>
+<h:outputScript library="js" name="graphic.js"/>
+<h:outputScript library="js">setInput();</h:outputScript>
+<div id="dataGetter">
+    <h:outputScript library="js">
+        myArray = "#{mainBean.getAllElements()}".split("|");
+        drawDots();
+    </h:outputScript>
+</div>
+<h:outputStylesheet library="css" name="second.css"/>
+
+</body>
+</html>

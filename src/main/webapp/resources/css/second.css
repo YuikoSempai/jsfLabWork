@@ -1,0 +1,38 @@
+#siteTable {
+    font-family: "Arial", sans-serif;
+    font-size: 14px;
+    border: 1px solid grey;
+    text-align: center;
+    width: 500px;
+    /*height: 500px;*/
+    max-height: 300px;
+    display: inline-block;
+    /*display: block;*/
+    /*overflow-x: scroll;*/
+    overflow-y: auto;
+    white-space: nowrap;
+    table-layout: fixed;
+}
+
+#siteTable th {
+    background: #7851A9;
+    border: 1px solid grey;
+    width: 20%;
+
+}
+
+#siteTable td {
+    border: 1px solid grey;
+}
+
+#formTableHeader,#tableTableHeader{
+    font-family: "Arial", sans-serif;
+    font-size: 14px;
+    border: 1px solid grey;
+    text-align: center;
+}
+canvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+}
