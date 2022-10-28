@@ -4,7 +4,7 @@ let myArray = [];
 function setInput() {//set input from <radio>
     input = document.getElementById('form:r_input').value;
     drawGraphic();
-    drawDots();
+    setTimeout(getAllDots(),500)
 }
 
 function drawGraphic() {//draw Graphic with input radius
@@ -50,7 +50,7 @@ let rounded = function (number) {
     return +number.toFixed(2);
 }
 
-function getCursorPosition(canvas, event){
+function getCursorPosition(canvas, event) {
     if (document.getElementById('form:r_input').value !== "") {
         const rect = canvas.getBoundingClientRect()
         let x = rounded((-1) * (200 - (event.clientX - rect.left)) / 40);
@@ -69,100 +69,70 @@ function addEventListenerToCanvas() {
     })
 }
 
-function sendData(x, y){
+function sendData(x, y) {
     let xField = document.getElementById('form:x');
     xField.value = x;
     let yField = document.getElementById('form:y');
     yField.value = y;
     let button = document.getElementById('form:sendButton');
     button.click();
+    setTimeout(getAllDots,1000);
 }
+
 addEventListenerToCanvas();
-getAllDots();
-function getAllDots(){
-    let size = "#{mainBean.dataList.size()}";
-    for(let i=0;i<size;i++){
-        let str = "{mainBean.dataList.get(" + i + ")}";
-        let element = "#" + str;
-        let x = element.split(" ")[0];
-        let y = element.split(" ")[1];
-        let r = element.split(" ")[2];
-        let status = element.split(" ")[3];
-        console.log(x + " " + y + " " + r + " " + status);
+
+function getAllDots() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/jsfLabWork-1.0/info", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                let array = xhr.response.split('\n');
+                for (let i = 0; i < array.length - 1; i++) {
+                    let arrayWithStatus = array[i].split(' ')
+                    let x = arrayWithStatus[1];
+                    let y = arrayWithStatus[2];
+                    let R = arrayWithStatus[3];
+                    let status = arrayWithStatus[4];
+                    let shape = arrayWithStatus[5];
+                    let size = arrayWithStatus[6];
+                    if (input == R) {
+                        drawDot(x, y, R, status, shape, size)
+                    }
+                }
+            }
+        }
     }
 }
 
-function drawDots(){
-    console.log("draw");
-    for(let i=0;i<myArray.length;i++){
-        let x = myArray[i].split(" ")[0];
-        let y = myArray[i].split(" ")[1];
-        let r = myArray[i].split(" ")[2];
-        if(r!==document.getElementById('form:r_input').value){
-            continue;
-        }
-        let status = myArray[i].split(" ")[3];
-        let canvas = document.getElementById('graphic');
-        let ctx = canvas.getContext('2d');
-        let circle = new Path2D();
-        circle.moveTo(200 + x * 40, 200 - y * 40);
-        circle.arc(200 + x * 40, 200 - y * 40, 10, 0, 2 * Math.PI)
-        if (status === "true") {
-            //green
-            ctx.fillStyle = 'green';
-        } else {
-            //black
-            ctx.fillStyle = 'red';
-        }
-        ctx.fill(circle);
+function drawDot(x, y, R, status, shape, size) {
+    let canvas = document.getElementById('graphic');
+    let ctx = canvas.getContext('2d');
+    let shapeForm;
+    if (shape === 'circle') {
+        shapeForm = new Path2D();
+        shapeForm.moveTo(200 + x * 40, 200 - y * 40);
+        shapeForm.arc(200 + x * 40, 200 - y * 40, 5 * size, 0, 2 * Math.PI)
+    }else{
+        shapeForm = new Path2D();
+        shapeForm.rect(200+x*40, 200-y*40, 5 *size, 5 * size);
     }
+    if (status) {
+        //green
+        ctx.fillStyle = 'green';
+    } else {
+        //black
+        ctx.fillStyle = 'red';
+    }
+    ctx.fill(shapeForm);
 }
 
-function onlyDigits() {
-    var separator = ".";
-    var replaced = new RegExp('[^\\d\\'+separator+'\\-]', "g");
-    var regex = new RegExp('\\'+separator, "g");
-    this.value = this.value.replace(replaced, "");
-
-    var minValue = parseFloat(-5);
-    var maxValue = parseFloat(3);
-    var val = parseFloat(separator === "." ? this.value : this.value.replace(new RegExp(separator, "g"), "."));
-
-    if (minValue <= maxValue) {
-        if (this.value[0] === "-") {
-            if (this.value.length > 8 ) {
-                this.value = this.value.substr(0, 8);
-            }
-        } else {
-            if (this.value.length > 7) {
-                this.value = this.value.substr(0, 7);
-            }
-        }
-
-        if (this.value[0] === separator) {
-            this.value = "0" + this.value;
-        }
-
-        if (minValue < 0 && maxValue < 0) {
-            if (this.value[0] !== "-")
-                this.value = "-" + this.value[0];
-        } else if (minValue >= 0 && maxValue >= 0) {
-            if (this.value[0] === "-")
-                this.value = this.value.substr(0, 0);
-        }
-
-        if (val < minValue || val > maxValue) {
-            this.value = this.value.substr(0, 0);
-        }
-        if (this.value.match(regex))
-            if (this.value.match(regex).length > 1) {
-                this.value = this.value.substr(0, 0);
-            }
-
-        if (this.value.match(/\-/g))
-            if (this.value.match(/\-/g).length > 1) {
-                this.value = this.value.substr(0, 0);
-            }
-
-    }
+function deleteAllData() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/jsfLabWork-1.0/info", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send();
+    window.location.reload();
 }

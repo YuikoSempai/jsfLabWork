@@ -1,9 +1,11 @@
 package beans;
 
-import dao.CoordinateDao;
+import DBworkers.DBWorker;
+import model.CircleShape;
 import model.CoordinateData;
+import model.Shape;
+import model.SquareShape;
 
-import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import java.sql.SQLException;
@@ -15,17 +17,34 @@ import java.util.List;
 @SessionScoped
 public class MainBean {
 
-    @EJB
-    CoordinateDao coordinateDao = new CoordinateDao();
     private CoordinateData newData;
+    private Shape shape;
+    private String shape_name;
+
+    public String getShape_name() {
+        return shape_name;
+    }
+
+    public void setShape_name(String shape_name) {
+        this.newData.setShape(shape_name);
+        this.shape_name = shape_name;
+    }
+
+    public void setCounter(Integer counter) {
+        this.counter = counter;
+    }
+
     private List<CoordinateData> dataList = new ArrayList<CoordinateData>();
     private Integer counter = 0;
 
     public void addData() {
         newData.setStatus(false);
         dataList.add(newData);
-        System.out.println(dataList.size());
         newData = new CoordinateData();
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
     }
 
     public CoordinateData getNewData() {
@@ -40,7 +59,7 @@ public class MainBean {
     }
 
     public List<CoordinateData> getDataList() {
-        return dataList;
+        return DBWorker.getAllElements();
     }
 
     public void setDataList(List<CoordinateData> dataList) {
@@ -52,7 +71,7 @@ public class MainBean {
     }
 
     public void createData() throws SQLException {
-        coordinateDao.createCoordinateData(this.newData);
+        DBWorker.addElement(this.newData,this.shape);
         addData();
     }
     public Integer getCounter(){
@@ -75,7 +94,12 @@ public class MainBean {
             return dataList.get(counter-1);
         }
     }
-
+    public Shape getShape() {
+        if(this.shape == null){
+            this.shape=new Shape();
+        }
+        return shape;
+    }
     public String getAllElements(){
         StringBuilder str = new StringBuilder("");
         for(CoordinateData data:dataList){

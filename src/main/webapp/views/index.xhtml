@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
 <h:head>
     <title>Page with form</title>
@@ -28,7 +29,7 @@
                 <div>
                     <h:panelGrid columns="1" style="margin-bottom: 10px">
                         <p:outputLabel for="y" value="Координата Y:"/>
-                        <p:inputText id="y" value="#{mainBean.newData.y}" oninput="onlyDigits()" required="true">
+                        <p:inputText id="y" value="#{mainBean.newData.y}" required="true">
                             <f:validator validatorId="yValidator"/>
                         </p:inputText>
                     </h:panelGrid>
@@ -45,12 +46,22 @@
                             <f:validator validatorId="rValidator"/>
                         </p:selectOneMenu>
                     </h:panelGrid>
+                    <h:panelGrid>
+                        <p:outputLabel for="shape" value="Фигура"/>
+                        <p:selectOneMenu id="shape" value="${mainBean.newData.shape}">
+                            <f:selectItem itemValue="circle" itemLabel="Круг"/>
+                            <f:selectItem itemValue="square" itemLabel="Квадрат"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <p:outputLabel for="shape_size" value="Размер фигуры"/>
+                        <p:inputText id="shape_size" value="#{mainBean.shape.size}" required="true"/>
+                    </h:panelGrid>
                 </div>
                 <h:commandButton id="sendButton" value="Добавить" action="#{mainBean.createData()}">
                     <f:ajax execute="form" render="dataTable"/>
-                    <f:ajax render="dataGetter"/>
                 </h:commandButton>
-                <h:commandButton id="clearButton" value="Очистить" action="#{mainBean.clear()}">
+                <h:commandButton id="clearButton" value="Очистить" onclick="deleteAllData()">
                     <f:ajax execute="form" render="dataTable"/>
                 </h:commandButton>
             </h:form>
@@ -76,6 +87,20 @@
                         <f:facet name="header">Статус попадания</f:facet>
                         #{data.status}
                     </p:column>
+                    <p:column>
+                        <f:facet name="header">Фигура</f:facet>
+                        #{data.shape}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Размеры фигуры</f:facet>
+
+                        <c:if test="#{data.circleShape eq null}">
+                            #{data.squareShape.size}
+                        </c:if>
+                        <c:if test="#{data.squareShape eq null}">
+                            #{data.circleShape.size}
+                        </c:if>
+                    </p:column>
                 </p:dataTable>
             </h:panelGroup>
         </td>
@@ -93,12 +118,6 @@
 </a>
 <h:outputScript library="js" name="graphic.js"/>
 <h:outputScript library="js">setInput();</h:outputScript>
-<div id="dataGetter">
-    <h:outputScript library="js">
-        myArray = "#{mainBean.getAllElements()}".split("|");
-        drawDots();
-    </h:outputScript>
-</div>
 <h:outputStylesheet library="css" name="second.css"/>
 
 </body>

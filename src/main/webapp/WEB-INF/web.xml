@@ -7,6 +7,14 @@
         <welcome-file>views/index.xhtml</welcome-file>
     </welcome-file-list>
     <servlet>
+        <servlet-name>Manage Servlet</servlet-name>
+        <servlet-class>servlet.ManageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Manage Servlet</servlet-name>
+        <url-pattern>/info</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
