@@ -1,14 +1,11 @@
 package beans;
 
 import DBworkers.DBWorker;
-import model.CircleShape;
 import model.CoordinateData;
 import model.Shape;
-import model.SquareShape;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +17,8 @@ public class MainBean {
     private CoordinateData newData;
     private Shape shape;
     private String shape_name;
+    private List<CoordinateData> dataList = new ArrayList<>();
+    private Integer counter = 0;
 
     public String getShape_name() {
         return shape_name;
@@ -30,25 +29,14 @@ public class MainBean {
         this.shape_name = shape_name;
     }
 
-    public void setCounter(Integer counter) {
-        this.counter = counter;
-    }
-
-    private List<CoordinateData> dataList = new ArrayList<CoordinateData>();
-    private Integer counter = 0;
-
     public void addData() {
         newData.setStatus(false);
         dataList.add(newData);
         newData = new CoordinateData();
     }
 
-    public void setShape(Shape shape) {
-        this.shape = shape;
-    }
-
     public CoordinateData getNewData() {
-        if(this.newData == null){
+        if (this.newData == null) {
             this.newData = new CoordinateData();
         }
         return newData;
@@ -70,39 +58,48 @@ public class MainBean {
         dataList.clear();
     }
 
-    public void createData() throws SQLException {
-        DBWorker.addElement(this.newData,this.shape);
+    public void createData() {
+        DBWorker.addElement(this.newData, this.shape);
         addData();
     }
-    public Integer getCounter(){
-        if(counter>dataList.size())
-        {
+
+    public Integer getCounter() {
+        if (counter > dataList.size()) {
             counter = 0;
         }
         return counter++;
     }
 
-    public CoordinateData get(){
-        if(dataList.size()==0){
+    public void setCounter(Integer counter) {
+        this.counter = counter;
+    }
+
+    public CoordinateData get() {
+        if (dataList.size() == 0) {
             return null;
-        }else{
-            if(counter==dataList.size())
-            {
-                counter=0;
+        } else {
+            if (counter == dataList.size()) {
+                counter = 0;
             }
             counter = counter + 1;
-            return dataList.get(counter-1);
+            return dataList.get(counter - 1);
         }
     }
+
     public Shape getShape() {
-        if(this.shape == null){
-            this.shape=new Shape();
+        if (this.shape == null) {
+            this.shape = new Shape();
         }
         return shape;
     }
-    public String getAllElements(){
-        StringBuilder str = new StringBuilder("");
-        for(CoordinateData data:dataList){
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    public String getAllElements() {
+        StringBuilder str = new StringBuilder();
+        for (CoordinateData data : dataList) {
             str.append(data.toString()).append("|");
         }
         return str.toString();

@@ -2,7 +2,7 @@ package model;
 
 public class AreaCheck {
     static boolean check(Double x, Double y, Integer r) {
-        boolean status = false;
+        boolean status;
         status = x >= 0 && y <= 0 && x * x + y * y <= r * r;
         if (x >= 0 && y >= 0) {
             double x1, y1, x2, y2, x3, y3;

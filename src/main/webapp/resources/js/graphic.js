@@ -98,7 +98,7 @@ function getAllDots() {
                     let status = arrayWithStatus[4];
                     let shape = arrayWithStatus[5];
                     let size = arrayWithStatus[6];
-                    if (input == R) {
+                    if (input === R) {
                         drawDot(x, y, R, status, shape, size)
                     }
                 }
